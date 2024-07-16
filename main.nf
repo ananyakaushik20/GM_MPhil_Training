@@ -112,7 +112,7 @@ process MergeBam {
     script:
     """
     picard MergeSamFiles \\
-        INPUT=$(echo ${bam_files} | sed 's/ / INPUT=/g') \\
+        ${bam_files.collect { "INPUT=" + it }.join(' ')} \\
         OUTPUT=library.bam
     samtools index library.bam
     """
@@ -259,7 +259,7 @@ process QualFilterVariants {
 
     script:
     """
-    grep -v "#" ${vcf} | awk '{if($6>100) print}' > gatk_QUAL_100_variants
+    grep -v "#" ${vcf} | awk '{if(\$6>100) print}' > gatk_QUAL_100_variants
     grep -v "#" gatk_QUAL_100_variants | wc -l
     """
 }
@@ -268,7 +268,7 @@ workflow {
     tar_file = 'GM04_AdvBioinfo_NGS_Mar2020.tar'
 
     extracted_files = ExtractTar(tar_file)
-    FastQC(extracted_files)
+    fastqc_files = FastQC(extracted_files)
     trimmed_adapters = TrimAdapters(extracted_files)
     trimmed_low_quality = TrimLowQuality(trimmed_adapters)
     indexed_reference = IndexReference('Saccharomyces_cerevisiae.EF4.68.dna.toplevel.fa')
