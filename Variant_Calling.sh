@@ -1,5 +1,18 @@
 #! bin/bash
-echo "hello world"
+
+# download reference files
+wget -P /Users/ananya/WGS/supporting_files/hg38/ https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz
+gunzip /Users/ananya/WGS/supporting_files/hg38/hg38.fa.gz
+
+# index ref - .fai file before running haplotype caller
+samtools faidx /Users/ananya/WGS/supporting_files/hg38/hg38.fa
+
+# ref dict - .dict file before running haplotype caller
+gatk CreateSequenceDictionary R=/Users/ananya/WGS/supporting_files/hg38/hg38.fa O=~/Desktop/demo/supporting_files/hg38/hg38.dict
+
+# download known sites files for BQSR from GATK resource bundle
+wget -P /Users/ananya/WGS/supporting_files/hg38/ https://storage.googleapis.com/genomics-public-data/resources/broad/hg38/v0/Homo_sapiens_assembly38.dbsnp138.vcf
+wget -P /Users/ananya/WGS/supporting_files/hg38/ https://storage.googleapis.com/genomics-public-data/resources/broad/hg38/v0/Homo_sapiens_assembly38.dbsnp138.vcf.idx
 
 # directories
 ref="/Users/ananya/WGS/supporting_files/hg38.fa"
